@@ -1,0 +1,46 @@
+//
+//  CounterTest.swift
+//  TourofTheBasicTCA_Counter
+//
+//  Created by Yin Bob on 2025/2/14.
+//
+import XCTest
+import ComposableArchitecture
+@testable import TourofTheBasicTCA_Counter
+
+@MainActor
+final class CounterTest: XCTestCase {
+    func testCounter() async {
+        let store = TestStore(initialState: CounterFeature.State()) {
+            CounterFeature()
+        }
+        
+        await store.send(.incrementButtonTapped) {
+            $0.count = 1
+        }
+    }
+    
+    func testTimer() async throws {
+        let store = TestStore(initialState: CounterFeature.State()) {
+            CounterFeature()
+        }
+        
+        await store.send(.toggleTimerButtonTapped) {
+            $0.isTimerOn = true
+        }
+        
+        try await Task.sleep(for: .milliseconds(1000))
+        await store.receive(.timerTicked) {
+            $0.count = 1
+        }
+        try await Task.sleep(for: .milliseconds(1000))
+        await store.receive(.timerTicked) {
+            $0.count = 2
+        }
+        
+        await store.send(.toggleTimerButtonTapped) {
+            $0.isTimerOn = false
+        }
+    }
+}
+

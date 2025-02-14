@@ -6,6 +6,7 @@
 //
 
 import Testing
+import ComposableArchitecture
 @testable import TourofTheBasicTCA_Counter
 
 struct TourofTheBasicTCA_CounterTests {
